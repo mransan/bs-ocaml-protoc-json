@@ -1,0 +1,18 @@
+{
+  "name": "test-ppx_deriving_protobuf",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "bs-ppx_deriving_protobuf": "^2.5.x",
+    "bs-ocaml-protoc": "^1.0.x",
+    "bs-platform" : "^1.5.x"
+  },
+  "scripts": {
+    "gen-example": "ocaml-protoc -pp -json -ml_out tests tests/example.proto",
+    "gen-unittest": "ocaml-protoc -pp -json -ml_out tests tests/unittest.proto",
+    "gen": "npm run-script gen-example && npm run-script gen-unittest",
+    "build": "npm run-script gen && bsb -make-world",
+    "test": "npm run-script build && node lib/js/tests/"
+  }
+}

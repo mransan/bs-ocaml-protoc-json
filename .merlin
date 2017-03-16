@@ -1,0 +1,14 @@
+####{BSB GENERATED: NO EDIT
+FLG -ppx /home/maxime_ransan/bs-ocaml-protoc-json.git/node_modules/bs-platform/bin/bsppx.exe
+S /home/maxime_ransan/bs-ocaml-protoc-json.git/node_modules/bs-platform/lib/ocaml
+B /home/maxime_ransan/bs-ocaml-protoc-json.git/node_modules/bs-platform/lib/ocaml
+FLG -nostdlib -no-alias-deps -color always -w -40+6+7+27+32..39+44+45
+S /home/maxime_ransan/bs-ocaml-protoc-json.git/node_modules/bs-ppx_deriving_protobuf/lib/ocaml
+B /home/maxime_ransan/bs-ocaml-protoc-json.git/node_modules/bs-ppx_deriving_protobuf/lib/ocaml
+S /home/maxime_ransan/bs-ocaml-protoc-json.git/node_modules/bs-ocaml-protoc/lib/ocaml
+B /home/maxime_ransan/bs-ocaml-protoc-json.git/node_modules/bs-ocaml-protoc/lib/ocaml
+S tests
+B lib/bs/tests
+S src
+B lib/bs/src
+####BSB GENERATED: NO EDIT}
