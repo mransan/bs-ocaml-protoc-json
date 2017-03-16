@@ -41,29 +41,31 @@ module Js_json = struct
   external parse : string -> t = "JSON.parse" [@@bs.val]
   (* TODO: more docs when parse error happens or stringify non-stringfy value *)
   
-  let null : t = Obj.magic Js.null 
+  let null : t = (Obj.magic (Js.null: 'a Js.null) : t)
   
-  let string s : t = Obj.magic s
+  external string : string -> t = "%identity"
   
-  let number f : t = Obj.magic f
+  external number : float -> t = "%identity"
   
-  let numberOfInt i : t = Obj.magic i
+  external numberOfInt : int -> t = "%identity"
   
-  let boolean b : t = Obj.magic (Js_boolean.to_js_boolean b)
+  external boolean : Js.boolean -> t = "%identity" 
   
-  let object_ o : t = Obj.magic o
+  let boolAsBoolean b = (Js_boolean.to_js_boolean b) |> boolean 
   
-  let stringArray a : t = Obj.magic a 
+  external object_ : t Js_dict.t -> t = "%identity"
   
-  let numberArray a : t = Obj.magic a 
+  external stringArray : string array -> t = "%identity"
   
-  let intArray a : t = Obj.magic a 
+  external numberArray : float array -> t = "%identity"
   
-  let booleanArray a : t = Obj.magic (Array.map boolean a)
+  external intArray : int array -> t = "%identity"
   
-  let objectArray a : t = Obj.magic a
+  external booleanArray : Js.boolean array -> t = "%identity"
   
-  external stringify: 'a -> string = "JSON.stringify" [@@bs.val]
+  external objectArray : t Js_dict.t array -> t = "%identity"
+  
+  external stringify: t -> string = "JSON.stringify" [@@bs.val]
 end 
 
 module Decoder = struct 
@@ -137,7 +139,7 @@ module Encoder = struct
     Js_dict.set t key (Js_json.numberOfInt v)
   
   let set_bool t key v  = 
-    Js_dict.set t key (Js_json.boolean v)
+    Js_dict.set t key (Js_json.boolAsBoolean v)
 
   let set_object t key v = 
     Js_dict.set t key (Js_json.object_ v)
@@ -152,11 +154,17 @@ module Encoder = struct
     Js_dict.set t key (Js_json.intArray @@ Array.of_list v)
   
   let set_bool_list t key (v:bool list)  = 
-    Js_dict.set t key (Js_json.booleanArray @@ Array.of_list v)
+    Js_dict.set t key (
+      v 
+      |> Array.of_list 
+      |> Array.map Js_boolean.to_js_boolean 
+      |> Js_json.booleanArray
+  )
 
   let set_object_list t key (v:t list) = 
     Js_dict.set t key ( v |> Array.of_list |> Js_json.objectArray)
 
-  let to_string = Js_json.stringify
+  let to_string t = 
+    t |> Js_json.object_ |> Js_json.stringify
   
 end
