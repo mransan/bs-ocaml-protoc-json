@@ -4,10 +4,8 @@ Protobuf JSON Runtime for BuckleScript
 > This package provide the runtime library in BuckleScript (OCaml) to be used
 > generated code from [ocaml-protoc](https://github.com/mransan/ocaml-protoc/). 
 
-Getting Started
----------------
-
-#### Prerequesite
+Installation - Prerequesites
+----------------------------
 
 **[opam](http://opam.ocaml.org/)** 
 
@@ -28,39 +26,41 @@ eval `opam config env`
 opam install --yes ocaml-protoc
 ```
 
-**[bucklescript](https://github.com/bloomberg/bucklescript)**
+**[npm]**
 
-> BuckleScript is the OCaml to JavaScript transpiler 
+> We assume you have node installed!
 
-If not installed you can install it running the following
-```bash
-npm install bs-platform
-``` 
-
-#### Installation
-
-To install the JSON runtime:
-```bash
-npm install bs-ocaml-protoc-json
-```
-or 
-```bash 
-yarn add bs-ocaml-protoc-json
-```
-
-#### Simple example 
+Simple example 
+--------------
 
 > In this simple example we'll demonstrate how to implement a library in OCaml
-> to perform temperature conversion API. 
+> to do temperature conversion. 
 >
-> The library API interface will be in JSON.
+> The library API interface will be in JSON and will directly be used by 
+> the web server
 
 > We assume you start in an empty directory 
-
 
 Start by creating the src directory:
 ```bash
 mkdir src
+```
+**Setup npm install**
+
+Start with this simple `package.json` file:
+```json
+{
+  "name" : "test", 
+  "dependencies": {
+    "bs-ocaml-protoc-json": "^1.0.x",
+    "bs-platform": "^1.5.x"
+  }
+}
+```
+
+🏁 Then run:
+```bash
+npm install
 ```
 
 **Define a protobuf message** 
@@ -70,18 +70,18 @@ Create a `src/messages.proto` file with the following content:
 ```Protobuf
 syntax = "proto3";
 
-enum Unit  {
+enum TemperatureUnit  {
   CELCIUS = 0; 
   FAHRENHEIT = 1;
 }
 
 message Temperature {
-  Unit unit = 1; 
-  float value =  2;
+  TemperatureUnit temperature_unit = 1; 
+  float temperature_value =  2;
 }
 
 message Request {
-  Unit desired_unit = 1;
+  TemperatureUnit desired_unit = 1;
   Temperature temperature = 2; 
 }
 
@@ -92,3 +92,94 @@ message Response {
   }
 }
 ```
+
+Now generate the OCaml code with JSON encoding:
+
+```bash
+ocaml-protoc -json -ml_out src src/messages.proto
+```
+
+🏁 If all goes well you should now have 2 new files in the `src` directory:
+```
+src/
+├── messages_pb.ml
+├── messages_pb.mli
+└── messages.proto
+```
+
+**Writing the conversion API**
+
+Let's first write the core API logic using the generated OCaml type. Add `src/conversion.ml` with the following code:
+
+```OCaml
+open Messages_pb 
+
+let convert desired_unit ({temperature_unit; temperature_value}  as t)  = 
+  if desired_unit = temperature_unit
+  then t 
+  else 
+   let temperature_value = 
+     match desired_unit with
+     | Celcius -> (temperature_value -. 32.) *. 5. /. 9.  
+     | Fahrenheit -> (temperature_value *. 9. /. 5.) -. 32.
+   in 
+   {temperature_value; temperature_unit = desired_unit}
+```
+
+Let'a also add a quick test to run the function in `src/conversion_test.ml`:
+```OCaml
+open Messages_pb 
+
+let make_celcius temperature_value = {
+  temperature_unit = Celcius; 
+  temperature_value;
+} 
+
+let make_fahrenheit temperature_value = {
+  temperature_unit = Fahrenheit; 
+  temperature_value;
+}
+
+let log {temperature_value; _} = Js.log temperature_value
+
+let () = 
+  Conversion.convert Celcius (make_celcius 100.) |> log; 
+  Conversion.convert Celcius (make_celcius 0.) |> log; 
+  Conversion.convert Fahrenheit (make_celcius 0.) |> log
+```
+
+**Setup the build**
+
+`BuckleScript` comes with its own build tool which requires config file. Create the following `bsconfig.json` at the 
+top of your project:
+
+```Json
+{
+  "name": "test",
+  "sources": [ "src" ], 
+  "bs-dependencies": [ "bs-ocaml-protoc"]
+}
+```
+
+Edit the `package.json` to include 2 scripts for building and running the test":
+```Json
+{
+  "name" : "test", 
+  "dependencies": {
+    "bs-ocaml-protoc-json": "file:../bs-ocaml-protoc-json.git",
+    "bs-platform": "^1.5.x"
+  },
+  "scripts" : {
+    "build" : "bsb -make-world",
+    "test" : "npm run-script build && node lib/js/src/conversion_test.js"
+  }
+}
+```
+
+🏁 Now run `npm run-script test` and you should see the ouptut:
+```bash
+100
+0
+-32
+```
+
