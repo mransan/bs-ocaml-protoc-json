@@ -1,5 +1,5 @@
 {
-  "name": "bs-bs-ocaml-protoc-json-json",
+  "name": "bs-ocaml-protoc-json",
   "version": "0.0.0",
   "description": "Protobuf JSON runtime for BuckleScript",
   "keywords": ["protobuf", "serialization", "syntax", "bucklescript", "json"],
