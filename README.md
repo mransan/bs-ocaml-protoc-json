@@ -198,7 +198,9 @@ let request_of_json_string json_str =
   match Pbrt_bsjson.Decoder.of_string json_str with
   | None -> None 
   | Some decoder -> 
-    Some (MessageDecoder.decode_request decoder)
+    try
+      Some (MessageDecoder.decode_request decoder)
+    with _ -> None
 
 let json_str_of_response response = 
   let encoder = Pbrt_bsjson.Encoder.empty () in 
