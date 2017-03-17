@@ -1,4 +1,34 @@
-(* ------ TEMPORARY UNTIL BS IS UPDATED ------- *)
+(* --- START of code from BuckleScript --- *)
+
+(* Copyright (C) 2015-2016 Bloomberg Finance L.P.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * In addition to the permissions granted to you by the LGPL, you may combine
+ * or link a "work that uses the Library" with a publicly distributed version
+ * of this file to produce a combined library or application, then distribute
+ * that combined work under the terms of your choosing, with no requirement
+ * to comply with the obligations normally placed on you by section 4 of the
+ * LGPL version 3 (or the corresponding section of a later version of the LGPL
+ * should you choose to use a later version).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. *)
+
+
+module Js_cast = struct 
+  external intOfBool : bool -> int = "%identity"  
+  external floatOfInt : int -> float = "%identity"  
+end 
 
 module Js_dict = struct 
   type 'a t
@@ -66,6 +96,8 @@ module Js_json = struct
   external stringify: t -> string = "JSON.stringify" [@@bs.val]
   
 end 
+
+(* --- END of code from BuckleScript --- *)
 
 module Decoder = struct 
 
@@ -135,7 +167,7 @@ module Encoder = struct
     Js_dict.set t key (Js_json.number v)
   
   let set_int t key v = 
-    Js_dict.set t key (Js_json.number (float_of_int v))
+    Js_dict.set t key (Js_json.number (Js_cast.floatOfInt v))
   
   let set_bool t key v  = 
     Js_dict.set t key (Js_json.boolean (Js_boolean.to_js_boolean v))
@@ -153,7 +185,7 @@ module Encoder = struct
     Js_dict.set t key (
       v
       |> Array.of_list 
-      |> Array.map float_of_int 
+      |> Array.map Js_cast.floatOfInt
       |> Js_json.numberArray 
     )
   
