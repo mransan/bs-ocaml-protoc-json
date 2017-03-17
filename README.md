@@ -183,3 +183,61 @@ Edit the `package.json` to include 2 scripts for building and running the test":
 -32
 ```
 
+**Add JSON API**
+
+Next step is to provide a `convert_json` function which will take a JSON value of a type `request` and return a JSON value of 
+type `response`. 
+
+Let's append the following to `conversion.ml`:
+
+```OCaml
+module MessageEncoder = Messages_pb.Make_encoder(Pbrt_bsjson.Encoder)
+module MessageDecoder = Messages_pb.Make_decoder(Pbrt_bsjson.Decoder) 
+
+let request_of_json_string json_str = 
+  match Pbrt_bsjson.Decoder.of_string json_str with
+  | None -> None 
+  | Some decoder -> 
+    Some (MessageDecoder.decode_request decoder)
+
+let json_str_of_response response = 
+  let encoder = Pbrt_bsjson.Encoder.empty () in 
+  MessageEncoder.encode_response response encoder; 
+  Pbrt_bsjson.Encoder.to_string encoder 
+
+let convert_json request_str = 
+  match request_of_json_string request_str with
+  | Some {desired_unit; temperature = Some temperature} -> 
+    let response = Temperature (convert desired_unit temperature) in 
+    json_str_of_response response 
+  | _ -> 
+    json_str_of_response (Error "error decoding request")
+```
+
+Let's add a quick test as well in `src/conversion_test.ml`:
+```OCaml
+let () = 
+  Js.log @@ Conversion.convert_json {|{
+    "desiredUnit": "FAHRENHEIT", 
+    "temperature": {
+      "temperatureUnit" : "CELCIUS", 
+      "temperatureValue": 0
+    }
+  }|}
+```
+
+We also need to update our `bsconfig.json` to include the new dependency for the JSON runtime:
+
+```JSON
+{
+  "name": "test",
+  "sources": [ "src" ], 
+  "bs-dependencies": [ "bs-ocaml-protoc", "bs-ocaml-protoc-json"]
+}
+```
+
+🏁 Now run `npm run-script test` and you should see the ouptut:
+
+```
+{"temperature":{"temperatureUnit":"FAHRENHEIT","temperatureValue":-32}}
+```
