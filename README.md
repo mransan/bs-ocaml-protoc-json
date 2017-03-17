@@ -1,7 +1,7 @@
 Protobuf JSON Runtime for BuckleScript
 --------------------------------------
 
-> This package provide the runtime library in BuckleScript (OCaml) to be used
+> This package provide the runtime library in BuckleScript to be used with 
 > generated code from [ocaml-protoc](https://github.com/mransan/ocaml-protoc/). 
 
 Installation - Prerequesites
@@ -26,7 +26,7 @@ eval `opam config env`
 opam install --yes ocaml-protoc
 ```
 
-**[npm]**
+**[npm](https://nodejs.org/en/download/current/)**
 
 > We assume you have node installed!
 
