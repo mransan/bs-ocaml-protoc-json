@@ -43,19 +43,6 @@ and default_person_mutable () : person_mutable = {
   children = [];
 }
 
-let rec pp_person fmt (v:person) = 
-  let pp_i fmt () =
-    Format.pp_open_vbox fmt 1;
-    Pbrt.Pp.pp_record_field "name" Pbrt.Pp.pp_string fmt v.name;
-    Pbrt.Pp.pp_record_field "id" Pbrt.Pp.pp_int32 fmt v.id;
-    Pbrt.Pp.pp_record_field "email" Pbrt.Pp.pp_string fmt v.email;
-    Pbrt.Pp.pp_record_field "phone" (Pbrt.Pp.pp_list Pbrt.Pp.pp_string) fmt v.phone;
-    Pbrt.Pp.pp_record_field "spouse" (Pbrt.Pp.pp_option pp_person) fmt v.spouse;
-    Pbrt.Pp.pp_record_field "children" (Pbrt.Pp.pp_list pp_person) fmt v.children;
-    Format.pp_close_box fmt ()
-  in
-  Pbrt.Pp.pp_brk pp_i fmt ()
-
 module Make_decoder(Decoder:Pbrt_json.Decoder_sig) = struct
   
   module Helper = Pbrt_json.Make_decoder_helper(Decoder)

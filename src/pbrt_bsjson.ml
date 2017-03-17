@@ -37,35 +37,34 @@ module Js_json = struct
       Obj.magic Object ), Obj.magic x
   
   let reifyType = reify_type 
-  
+
   external parse : string -> t = "JSON.parse" [@@bs.val]
+
+  external stringifyAny : 'a -> string option = "JSON.stringify" [@@bs.val] [@@bs.return undefined_to_opt]
   (* TODO: more docs when parse error happens or stringify non-stringfy value *)
   
-  let null : t = (Obj.magic (Js.null: 'a Js.null) : t)
+  external null : t = "" [@@bs.val]
   
   external string : string -> t = "%identity"
   
   external number : float -> t = "%identity"
   
-  external numberOfInt : int -> t = "%identity"
-  
   external boolean : Js.boolean -> t = "%identity" 
   
-  let boolAsBoolean b = (Js_boolean.to_js_boolean b) |> boolean 
-  
   external object_ : t Js_dict.t -> t = "%identity"
+  
+  external array_ : t array -> t = "%identity"
   
   external stringArray : string array -> t = "%identity"
   
   external numberArray : float array -> t = "%identity"
-  
-  external intArray : int array -> t = "%identity"
   
   external booleanArray : Js.boolean array -> t = "%identity"
   
   external objectArray : t Js_dict.t array -> t = "%identity"
   
   external stringify: t -> string = "JSON.stringify" [@@bs.val]
+  
 end 
 
 module Decoder = struct 
@@ -136,10 +135,10 @@ module Encoder = struct
     Js_dict.set t key (Js_json.number v)
   
   let set_int t key v = 
-    Js_dict.set t key (Js_json.numberOfInt v)
+    Js_dict.set t key (Js_json.number (float_of_int v))
   
   let set_bool t key v  = 
-    Js_dict.set t key (Js_json.boolAsBoolean v)
+    Js_dict.set t key (Js_json.boolean (Js_boolean.to_js_boolean v))
 
   let set_object t key v = 
     Js_dict.set t key (Js_json.object_ v)
@@ -151,7 +150,12 @@ module Encoder = struct
     Js_dict.set t key (Js_json.numberArray @@ Array.of_list v)
   
   let set_int_list t key (v:int list)  = 
-    Js_dict.set t key (Js_json.intArray @@ Array.of_list v)
+    Js_dict.set t key (
+      v
+      |> Array.of_list 
+      |> Array.map float_of_int 
+      |> Js_json.numberArray 
+    )
   
   let set_bool_list t key (v:bool list)  = 
     Js_dict.set t key (

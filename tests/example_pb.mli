@@ -26,12 +26,6 @@ val default_person :
   person
 (** [default_person ()] is the default value for type [person] *)
 
-
-(** {2 Formatters} *)
-
-val pp_person : Format.formatter -> person -> unit 
-(** [pp_person v] formats v *)
-
 module Make_decoder(Decoder:Pbrt_json.Decoder_sig) : sig
   
   (** {2 JSON Decoding} *)

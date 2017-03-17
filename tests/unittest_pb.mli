@@ -116,24 +116,6 @@ val default_test :
   test
 (** [default_test ()] is the default value for type [test] *)
 
-
-(** {2 Formatters} *)
-
-val pp_all_basic_types : Format.formatter -> all_basic_types -> unit 
-(** [pp_all_basic_types v] formats v *)
-
-val pp_small_message : Format.formatter -> small_message -> unit 
-(** [pp_small_message v] formats v *)
-
-val pp_enum : Format.formatter -> enum -> unit 
-(** [pp_enum v] formats v *)
-
-val pp_single_one_of : Format.formatter -> single_one_of -> unit 
-(** [pp_single_one_of v] formats v *)
-
-val pp_test : Format.formatter -> test -> unit 
-(** [pp_test v] formats v *)
-
 module Make_decoder(Decoder:Pbrt_json.Decoder_sig) : sig
   
   (** {2 JSON Decoding} *)
