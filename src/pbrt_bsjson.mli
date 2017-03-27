@@ -29,7 +29,7 @@
 module Decoder : sig 
   include (Pbrt_json.Decoder_sig) 
 
-(*  val of_json : json -> t option*)
+  val of_json : Js_json.t -> t option
   (** [of_json json] returns a decoder if [json] is valid. [json] is valid
       if it is an [Js_json.Object] since protobuf messages are always 
       objects. *)
@@ -42,6 +42,9 @@ end
 module Encoder : sig 
 
   include Pbrt_json.Encoder_sig
+
+  val to_json : t -> Js_json.t 
+  (** [to_json encoder] returns the JSON object *) 
 
   val to_string : t -> string
   (** [to_string encoder] returns the JSON string encoded using  [encoder] *)
