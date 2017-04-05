@@ -2,7 +2,5 @@
   "name": "bs-ocaml-protoc-json",
   "sources": [ "src", "tests"], 
   "bs-dependencies": [ 
-    "bs-ppx_deriving_protobuf", 
-    "bs-ocaml-protoc"
   ]
 }

@@ -2,7 +2,9 @@
   "name": "bs-ocaml-protoc-json",
   "version": "0.0.2",
   "description": "Protobuf JSON runtime for BuckleScript",
-  "keywords": ["protobuf", "serialization", "syntax", "bucklescript", "json"],
+  "keywords": [
+    "protobuf", "serialization", "syntax", "bucklescript", "json"
+  ],
   "homepage": "https://github.com/mransan/bs-ocaml-protoc-json",
   "bugs": "https://github.com/mransan/bs-ocaml-protoc-json/issues",
   "license": "MIT",
@@ -12,17 +14,12 @@
     "url": "https://github.com/mransan/bs-ocaml-protoc-json"
   },
   "dependencies": {
-    "bs-ppx_deriving_protobuf": "^2.5.x",
-    "bs-ocaml-protoc": "^1.0.x"
   },
   "devDependencies" : {
     "bs-platform" : "^1.6.x"
   },
   "scripts": {
-    "gen-example": "ocaml-protoc -json -ml_out tests tests/example.proto",
-    "gen-unittest": "ocaml-protoc -json -ml_out tests tests/unittest.proto",
-    "gen": "npm run-script gen-example && npm run-script gen-unittest",
-    "build": "npm run-script gen && bsb -make-world",
+    "build": "bsb -make-world",
     "test": "npm run-script build && node lib/js/tests/"
   }
 }
