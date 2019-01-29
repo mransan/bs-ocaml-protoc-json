@@ -1,6 +1,6 @@
 {
   "name": "bs-ocaml-protoc-json",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Protobuf JSON runtime for BuckleScript",
   "keywords": [
     "protobuf", "serialization", "syntax", "bucklescript", "json"
@@ -16,10 +16,11 @@
   "dependencies": {
   },
   "devDependencies" : {
-    "bs-platform" : "^1.6.x"
+    "bs-platform" : "^4.0"
   },
   "scripts": {
     "build": "bsb -make-world",
+    "watch": "bsb -make-world -w",
     "test": "npm run-script build && node lib/js/tests/"
   }
 }
