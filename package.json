@@ -3,20 +3,23 @@
   "version": "0.1.1",
   "description": "Protobuf JSON runtime for BuckleScript",
   "keywords": [
-    "protobuf", "serialization", "syntax", "bucklescript", "json"
+    "protobuf",
+    "serialization",
+    "syntax",
+    "bucklescript",
+    "json"
   ],
   "homepage": "https://github.com/mransan/bs-ocaml-protoc-json",
   "bugs": "https://github.com/mransan/bs-ocaml-protoc-json/issues",
   "license": "MIT",
   "author": " Maxime Ransan<maxime.ransan@gmail.com>",
-  "repository" : { 
-    "type": "git", 
+  "repository": {
+    "type": "git",
     "url": "https://github.com/mransan/bs-ocaml-protoc-json"
   },
-  "dependencies": {
-  },
-  "devDependencies" : {
-    "bs-platform" : "^1.6.x"
+  "dependencies": {},
+  "devDependencies": {
+    "bs-platform": "^5.x.x"
   },
   "scripts": {
     "build": "bsb -make-world",
