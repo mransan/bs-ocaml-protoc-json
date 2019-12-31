@@ -25,12 +25,16 @@ val int32 : Js_json.t -> string -> string -> int32
     @raise Failure if the [json] value does not contain a valid int32 
     encoding *)
 
+val int32_wrapped : Js_json.t -> string -> string -> int32 option
+
 val int64 : Js_json.t -> string -> string -> int64 
 (** [int64 json record_name field_name] converts [json] to the int64 
     value according to the Protobuf specifications. 
     
     @raise Failure if the [json] value does not contain a valid int64 
     encoding *)
+
+val int64_wrapped : Js_json.t -> string -> string -> int64 option
 
 val int : Js_json.t -> string -> string -> int 
 (** [int json record_name field_name] converts [json] to the int 
@@ -46,6 +50,8 @@ val float : Js_json.t -> string -> string -> float
     @raise Failure if the [json] value does not contain a valid float 
     encoding *)
 
+val float_wrapped : Js_json.t -> string -> string -> float option
+
 val bool : Js_json.t -> string -> string -> bool 
 (** [bool json record_name field_name] converts [json] to the bool 
     value according to the Protobuf specifications. 
@@ -53,12 +59,16 @@ val bool : Js_json.t -> string -> string -> bool
     @raise Failure if the [json] value does not contain a valid bool 
     encoding *)
 
+val bool_wrapped : Js_json.t -> string -> string -> bool option
+
 val string : Js_json.t -> string -> string -> string 
 (** [string json record_name field_name] converts [json] to the string 
     value according to the Protobuf specifications. 
     
     @raise Failure if the [json] value does not contain a valid string 
     encoding *)
+
+val string_wrapped : Js_json.t -> string -> string -> string option 
 
 val bytes : Js_json.t -> string -> string -> bytes 
 (** [bytes json record_name field_name] converts [json] to the bytes 
